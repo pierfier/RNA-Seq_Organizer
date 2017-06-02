@@ -10,8 +10,8 @@ class GeneEntry{
         
         //Add the value to next array element if available
         //return false if array is filled
-        bool addValue(double val);
-        
+        bool addTargetValue(double val);
+        bool addControlValue(double val);
 
         //Calculates the significance among the values
         double calcSignificance(int threshold);
@@ -22,7 +22,7 @@ class GeneEntry{
         int num_target_replicates_;
         int num_control_replicates_;
         bool control_;
-        double * values_;
+        double * target_values_;
         double * control_values_;
 };
 
