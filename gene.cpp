@@ -1,8 +1,13 @@
 #include "gene.h"
+#include <string>
+#include <iostream>
+#include <vector>
+#include <cmath>
 
-GeneEntry::GeneEntry(string name, bool c, int replicates, int control_replicates){
-    name_ = name;
-    control_ = c;
+using namespace std;
+
+GeneEntry::GeneEntry(){
+    name_ = string("");
        
     target_average_ = 0;
     control_average_ = 0;
@@ -11,15 +16,9 @@ GeneEntry::GeneEntry(string name, bool c, int replicates, int control_replicates
     fold_change_ = 0;
 }
 
-//Return the target average
-//Calculates the average if value is not yet stored
-double GeneEntry::getTargetAverage(){
-    if(target_average_ != 0){
-        return target_average_;
-    }
-
+void GeneEntry::calcStats(){
     // Calculate target average
-    
+
     double sum = 0;
 
     for(int i = 0; i < target_values_.size(); ++i){
@@ -28,41 +27,20 @@ double GeneEntry::getTargetAverage(){
 
     target_average_ = sum / target_values_.size();
     
-    return target_average_;
-}
+    // Calculate control average
 
-//Return the control average
-//Calculates the average if value is not yet stored
-double GeneEntry::getControlAverage(){
-    if(control_average_ != 0){
-        return control_average_;
-    }
-
-    // Calculate target average
-    
-    double sum = 0;
-
+    sum = 0;
     for(int i = 0; i < control_values_.size(); ++i){
         sum += control_values_[i];
     }
 
     control_average_ = sum / control_values_.size();
     
-    return control_average_;
-}
-
-//Return the target standard deviation
-//Calculates if value not yet stored
-double GeneEntry::getTargetStDev(){
-    if(target_stdev_ != 0){
-        return target_stdev_;
-    }
-
-    // Calculate the target standard deviation
-       
+    // Calculate target standard deviation
+    
     double var = 0;
 
-    for(int i = 0; i < target_values_; ++i){
+    for(int i = 0; i < target_values_.size(); ++i){
         var += pow((target_values_[i] - getTargetAverage()),2);
     }
 
@@ -70,34 +48,21 @@ double GeneEntry::getTargetStDev(){
 
     target_stdev_ = sqrt(var);
 
-    return target_stdev_;
-}
+    // Calculate control standard deviation
 
-//Return the control standard deviation
-//Calculates if value not yet stored
-double GeneEntry::getControlStDev(){
-    if(control_stdev_ != 0){
-        return control_stdev_;
-    }
-
-    // Calculate the target standard deviation
-       
-    double var = 0;
-
-    for(int i = 0; i < control_values_; ++i){
+    var = 0;
+    for(int i = 0; i < control_values_.size(); ++i){
         var += pow((control_values_[i] - getControlAverage()),2);
     }
 
     var /= control_values_.size();
 
     control_stdev_ = sqrt(var);
-
-    return control_stdev_;
 }
 
 //Return target value at index i
 //Returns -1 if index is out of bounds
-double GeneEntry::getTargetValueAt(int i){
+double GeneEntry::getTargetValueAt(int i) const {
     if(i < 0 || i >= target_values_.size()){
         return -1;  
     }
@@ -107,7 +72,7 @@ double GeneEntry::getTargetValueAt(int i){
 
 //Return control value at index i
 //Returns -1 if index is out of bounds
-double GeneEntry::getControlValueAt(int i){
+double GeneEntry::getControlValueAt(int i) const {
     if(i < 0 || i >= control_values_.size()){
         return -1;  
     }
