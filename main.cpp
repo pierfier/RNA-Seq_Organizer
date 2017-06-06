@@ -1,13 +1,77 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <set>
 #include "gene.h"
 
 using namespace std;
 
-void parseRawTuxedoData(const string& fileName, map<string, GeneEntry>& entries, int control_replic, int target_replic){
+void parseSumaryTuxedoData(const string& fileName, unordered_map<string, GeneEntry>& entries){
+    string line;
+
+    ifstream in(fileName.c_str());
+
+    //Check if file is open
+    if(!in.is_open()){
+        cerr << "Could not open " << fileName << endl;
+        exit(1);
+    }
+
+    //Read in header line
+    getline(in, line);
+    
+    //Data to store for each line
+    string str;
+    int i;
+    unordered_map<string, GeneEntry>::iterator it;
+
+    while(getline(in, line)){
+        str = line.substr(0, (i = line.find("\t")));
+        ++i;
+        
+        //DEBUG
+        cout << str << " ";
+
+        it = entries.find(str);
+        
+        //DEBUG
+        if(it == entries.end()){
+            cerr << "Could not find gene " << str << endl;
+            exit(1);
+        }
+        
+        //Forward to fold change entry
+        for(int j = 0; j < 10; ++j){
+            i = line.find("\t", i);
+            ++i;
+        }
+        
+        //Grab the fold change
+        str = line.substr(i, line.find("\t", i) - i);
+        i = line.find("\t", i);
+        ++i;
+        it->second.setFoldChange(str);
+        
+        //Forward to p Value entry
+        for(int j = 0; j < 2; ++j){
+            i = line.find("\t", i);
+            ++i;
+        }
+
+        //Grab the p Value entry
+        str = line.substr(i, line.find("\t", i) - i);
+        it->second.setPValue(str);
+
+        //DEBUG
+        cout << "=" << str << "=" << endl;
+    }
+}
+
+void parseRawTuxedoData(const string& fileName, 
+                    unordered_map<string, GeneEntry>& entries, 
+                    int control_replic, int target_replic){
+    
     string line;
     ifstream in(fileName.c_str());
 
@@ -63,14 +127,14 @@ void parseRawTuxedoData(const string& fileName, map<string, GeneEntry>& entries,
 
 //Remove all data that is above the given stdev threshold
 //or below the given mean threshold
-void filterGeneEntries(map<string, GeneEntry>& entries, 
+void filterGeneEntries(unordered_map<string, GeneEntry>& entries, 
         int mean_threshold, int var_threshold){
-    map<string, GeneEntry>::iterator it, it2;
+    unordered_map<string, GeneEntry>::iterator it, it2;
     for(it = entries.begin(); it != entries.end();){
         
         //DEBUG
-        if(it->second.getName() == "Pomc"){
-            cout << "Stdev control of Pomc is " << it->second.getControlStDev() 
+        if(it->second.getName() == "Atp5e"){
+            cout << "Stdev control of Atp5e is " << it->second.getControlStDev() 
                 << " and stdev target is " << it->second.getTargetStDev() << endl;
         }
 
@@ -93,10 +157,10 @@ void filterGeneEntries(map<string, GeneEntry>& entries,
 }
 
 // Rank gene entries based on fold change
-// copy all of the values from the map to the set
+// copy all of the values from the unordered_map to the set
 // Ranking is done by GeneEntry class function comparisons
-void rankGeneEntries(map<string, GeneEntry>& entries, set<GeneEntry>& sorted_entries){
-    map<string, GeneEntry>::iterator it;
+void rankGeneEntries(unordered_map<string, GeneEntry>& entries, set<GeneEntry>& sorted_entries){
+    unordered_map<string, GeneEntry>::iterator it;
 
     for(it = entries.begin(); it != entries.end(); ++it){
         sorted_entries.insert(it->second);
@@ -128,7 +192,7 @@ void outputData(set<GeneEntry> entries, int target_replic,
         out << "C_rep " << i+1 << "\t";
     }
 
-    out << "log2"<< endl;
+    out << "log2\tp_value"<< endl;
 
     // Output gene entries
 
@@ -148,6 +212,10 @@ void outputData(set<GeneEntry> entries, int target_replic,
             out << it->getControlValueAt(i) << "\t";
         }
 
+        // Output fold change and p value
+        out << it->getFoldChange() << "\t";
+        out << it->getPValue() << "\t";
+
         out << endl;
     }
 
@@ -156,8 +224,8 @@ void outputData(set<GeneEntry> entries, int target_replic,
 
 int main(int argc, char *argv[]){
     //Local Variables
-    string fileName;
-    map<string, GeneEntry> entries;
+    string rawTuxFile, sumTuxFile;
+    unordered_map<string, GeneEntry> entries;
     int num_target_replic;
     int num_control_replic;
     int var_threshold;
@@ -175,8 +243,12 @@ int main(int argc, char *argv[]){
     
     //Get the file name of the raw Tuxedo data
     cout << "Enter the file name of the raw Tuxedo data: " << endl;
-    cin >> fileName;
+    cin >> rawTuxFile;
     
+    //Get the file name of the summary Tuxedo data
+    cout << "Enter the file name of the summary Tuxedo data: " << endl;
+    cin >> sumTuxFile;
+
     //Get the standard deviation threshold
     cout << "Enter the standard deviation threshold: ";
     cin >> var_threshold;
@@ -186,7 +258,8 @@ int main(int argc, char *argv[]){
     cin >> mean_threshold;
 
     //------- Parse all of the gene entries ---------
-    parseRawTuxedoData(fileName, entries, num_control_replic, num_target_replic);
+    parseRawTuxedoData(rawTuxFile, entries, num_control_replic, num_target_replic);
+    parseSumaryTuxedoData(sumTuxFile, entries);
 
     //------- Rank the data -------------------
     // First filter out genes that have a standard deviation that

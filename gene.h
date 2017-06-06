@@ -14,11 +14,13 @@ class GeneEntry{
         //Constructor
         GeneEntry();
         
-        //Add the value to next array element if available
-        //return false if array is filled
+        // Setters
+
         void addTargetValue(double val);
         void addControlValue(double val);
         void setName(const string& name){name_ = name;}
+        void setFoldChange(const string& val){fold_change_ = val;}
+        void setPValue(const string& val){pValue_ = val;}
 
         //Calculate all of the averages and standard deviations
         void calcStats();
@@ -32,10 +34,10 @@ class GeneEntry{
         double getControlStDev() const {return control_stdev_;}
         double getTargetValueAt(int i) const;
         double getControlValueAt(int i) const;
-        double getFoldChange() const {return fold_change_;}
         int numTargetValues() const {return target_values_.size();}
         int numControlValues() const {return control_values_.size();}
-
+        string getPValue() const {return pValue_;}
+        string getFoldChange() const {return fold_change_;}
         //Used for inserting into the set
         bool operator<(const GeneEntry& ge) const {
             return (getTargetAverage() - getControlAverage()) < (ge.getTargetAverage() - ge.getControlAverage());}
@@ -51,7 +53,8 @@ class GeneEntry{
         double control_stdev_;
         
         //Store the fold change
-        double fold_change_;
+        string fold_change_;
+        string pValue_;
 
         //Store values
         vector<double> target_values_;

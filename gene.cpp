@@ -13,7 +13,8 @@ GeneEntry::GeneEntry(){
     control_average_ = 0;
     target_stdev_ = 0;
     control_stdev_ = 0;
-    fold_change_ = 0;
+    fold_change_ = "";
+    pValue_ = "";
 }
 
 void GeneEntry::calcStats(){
