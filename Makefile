@@ -1,5 +1,5 @@
 FLAGS = -g
-SRC = gene.cpp main.cpp
+SRC = gene.cpp parsers.cpp main.cpp
 
 all: data_org
 
