@@ -68,6 +68,12 @@ void filterGeneEntries(map<string, GeneEntry>& entries,
     map<string, GeneEntry>::iterator it, it2;
     for(it = entries.begin(); it != entries.end();){
         
+        //DEBUG
+        if(it->second.getName() == "Pomc"){
+            cout << "Stdev control of Pomc is " << it->second.getControlStDev() 
+                << " and stdev target is " << it->second.getTargetStDev() << endl;
+        }
+
         //Check if either standard deviations are above the threshold
         if(it->second.getTargetStDev() > var_threshold ||
                 it->second.getControlStDev() > var_threshold ||
@@ -75,13 +81,7 @@ void filterGeneEntries(map<string, GeneEntry>& entries,
                 it->second.getControlAverage() < mean_threshold){
             
             it2 = it;
-            
-            //Check if iterator is pointing to the first element in the map
-            if(it == entries.begin()){
-                it++;
-            }else{
-                --it;
-            }
+            ++it;
             
             entries.erase(it2);
             
