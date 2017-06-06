@@ -76,9 +76,10 @@ void filterGeneEntries(map<string, GeneEntry>& entries,
 
         //Check if either standard deviations are above the threshold
         if(it->second.getTargetStDev() > var_threshold ||
-                it->second.getControlStDev() > var_threshold ||
-        it->second.getTargetAverage() < mean_threshold  ||
-                it->second.getControlAverage() < mean_threshold){
+           it->second.getControlStDev() > var_threshold ||
+           it->second.getTargetAverage() < mean_threshold  ||
+           it->second.getControlAverage() < mean_threshold ||
+           it->second.getControlAverage() > it->second.getTargetAverage() ){
             
             it2 = it;
             ++it;
