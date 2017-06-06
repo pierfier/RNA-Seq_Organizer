@@ -124,3 +124,6 @@ void parseRawTuxedoData(const string& fileName,
         entries.insert(make_pair(temp.getName(), temp));
     }
 }
+
+//TODO
+//void parse

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <stdlib.h>
 #include <set>
 #include "gene.h"
 #include "parsers.h"
@@ -51,9 +52,9 @@ void rankGeneEntries(unordered_map<string, GeneEntry>& entries, set<GeneEntry>& 
     }
 }
 
-void outputData(set<GeneEntry> entries, int target_replic,
+void outputData(set<GeneEntry> entries, const string& outputFile, int target_replic,
                     int control_replic){
-    ofstream out("output.txt");
+    ofstream out(outputFile);
  
     //Check if file works
     if(!out.is_open()){
@@ -106,63 +107,68 @@ void outputData(set<GeneEntry> entries, int target_replic,
     out.close();
 }
 
+//Prints all of the commands and how to use them
+void printHelp(){
+    //TODO implement this method whenever
+    //Indicate that the order of execution is what happens in the program
+}
+
 int main(int argc, char *argv[]){
     //Local Variables
-    string rawTuxFile, sumTuxFile;
+    string rawTuxFile, sumTuxFile, rawTreatFile, outputFile;
     unordered_map<string, GeneEntry> entries;
+    set<GeneEntry> sorted_entries;
+    
     int num_target_replic;
     int num_control_replic;
     int var_threshold;
     int mean_threshold;
-    
-    //------ Prompt user for necessary data --------
-    
-    //Get number of target replicates
-    cout << "Enter the number of target replicates: ";
-    cin >> num_target_replic;
-
-    //Get the number of control replicates
-    cout << "Enter the number of  control replicates: ";
-    cin >> num_control_replic;
-    
-    //Get the file name of the raw Tuxedo data
-    cout << "Enter the file name of the raw Tuxedo data: " << endl;
-    cin >> rawTuxFile;
-    
-    //Get the file name of the summary Tuxedo data
-    cout << "Enter the file name of the summary Tuxedo data: " << endl;
-    cin >> sumTuxFile;
-
-    //Get the standard deviation threshold
-    cout << "Enter the standard deviation threshold: ";
-    cin >> var_threshold;
-
-    //Get the average threshold
-    cout << "Enter the average threshold: ";
-    cin >> mean_threshold;
-
-    //------- Parse all of the gene entries ---------
-    parseRawTuxedoData(rawTuxFile, entries, num_control_replic, num_target_replic);
-    parseSumaryTuxedoData(sumTuxFile, entries);
-
-    //------- Rank the data -------------------
-    // First filter out genes that have a standard deviation that
-    // as past the threshold standard deviation
-    // then rank based on the fold change
-    filterGeneEntries(entries, mean_threshold, var_threshold);
-    set<GeneEntry> sorted_entries;
-    rankGeneEntries(entries, sorted_entries);
-
-    //------- write all of the sorted genes to a file --------------
-    outputData(sorted_entries, num_target_replic, num_control_replic);
-
-    //Parse command-line arguments
+       
+    //Check arguments for configuration options
     for(int i = 0; i < argc; ++i){
-        if(string(argv[i]) == "-"){
-            
-            //Option to 
         
+        //Option to parse raw Tuxedo data
+        if(string(argv[i]) == "-rt"){
+            rawTuxFile = string(argv[i + 1]);
 
+        //Op#include <stdlib.h>tion to parse summary Tuxedo data
+        }else if(string(argv[i]) == "-st"){
+            sumTuxFile = string(argv[i + 1]);
+
+        //Option to parse raw two treatment counts data
+        }else if(string(argv[i]) == "-r2"){
+            rawTreatFile = string(argv[i + 1]);
+            
+        //Option for mean threshold
+        }else if(string(argv[i]) == "-mt"){
+            mean_threshold = atoi(argv[i + 1]); //TODO check if this works
+        
+        //Option for standard deviation threshold
+        }else if(string(argv[i]) == "-vt"){
+            var_threshold = atoi(argv[i + 1]);
+
+        //Option for number of target replicates
+        }else if(string(argv[i]) == "-ntr"){
+            num_target_replic = atoi(argv[i + 1]);
+
+        //Option for number of control replicates
+        }else if(string(argv[i]) == "-ncr"){
+            num_control_replic = atoi(argv[i + 1]);
+
+        }else if(string(argv[i]) == "-o"){
+            outputFile = string(argv[i + 1]);
         }
     }
+        //Parse the data
+        parseRawTuxedoData(rawTuxFile, entries, num_control_replic, num_target_replic);
+        parseSumaryTuxedoData(sumTuxFile, entries);
+        
+        //Filter the genes
+        filterGeneEntries(entries, mean_threshold, var_threshold);        
+        
+        //Rank genes based on difference between the target average and control average
+        rankGeneEntries(entries, sorted_entries);
+        
+        //Ouput data to given file
+        outputData(sorted_entries, outputFile, num_target_replic, num_control_replic);
 }
