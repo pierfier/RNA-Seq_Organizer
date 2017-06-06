@@ -116,6 +116,9 @@ void printHelp(){
 int main(int argc, char *argv[]){
     //Local Variables
     string rawTuxFile, sumTuxFile, rawTreatFile, outputFile;
+    
+    //TODO Use this as a vector, possibly make this a class
+    //to keep everything organized
     unordered_map<string, GeneEntry> entries;
     set<GeneEntry> sorted_entries;
     
