@@ -130,7 +130,8 @@ int main(int argc, char *argv[]){
 
     //TODO Use this as a vector, possibly make this a class
     //to keep everything organized
-    unordered_map<string, GeneEntry> entries;
+    vector<Experiment> experiments;
+    
     set<GeneEntry> sorted_entries;
     
     int num_target_replic;
@@ -141,6 +142,8 @@ int main(int argc, char *argv[]){
     //Check arguments for configuration options
     for(int i = 0; i < argc; ++i){
         
+        //Parse arguments based on experiments
+
         //Option to parse raw Tuxedo data
         if(string(argv[i]) == "-rt"){
             dataFiles[rawTuxedo] = string(argv[i + 1]);
