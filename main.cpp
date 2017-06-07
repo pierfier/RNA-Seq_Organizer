@@ -2,12 +2,22 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include <stdlib.h>
 #include <set>
 #include "gene.h"
 #include "parsers.h"
 
 using namespace std;
+
+#define MAX_FILES 3
+
+//Global variables
+enum dataFiles{
+    rawTuxedo,
+    sumTuxedo,
+    rawTreat
+};
 
 
 //Remove all data that is above the given stdev threshold
@@ -115,11 +125,12 @@ void printHelp(){
 
 int main(int argc, char *argv[]){
     //Local Variables
-    string rawTuxFile, sumTuxFile, rawTreatFile, outputFile;
-    
+    string dataFiles[MAX_FILES];
+
+
     //TODO Use this as a vector, possibly make this a class
     //to keep everything organized
-    unordered_map<string, GeneEntry> entries;
+    vector<unordered_map<string, GeneEntry>> entries;
     set<GeneEntry> sorted_entries;
     
     int num_target_replic;
