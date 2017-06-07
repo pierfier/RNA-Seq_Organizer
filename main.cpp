@@ -130,7 +130,7 @@ int main(int argc, char *argv[]){
 
     //TODO Use this as a vector, possibly make this a class
     //to keep everything organized
-    vector<unordered_map<string, GeneEntry>> entries;
+    unordered_map<string, GeneEntry> entries;
     set<GeneEntry> sorted_entries;
     
     int num_target_replic;
@@ -143,15 +143,15 @@ int main(int argc, char *argv[]){
         
         //Option to parse raw Tuxedo data
         if(string(argv[i]) == "-rt"){
-            rawTuxFile = string(argv[i + 1]);
+            dataFiles[rawTuxedo] = string(argv[i + 1]);
 
         //Op#include <stdlib.h>tion to parse summary Tuxedo data
         }else if(string(argv[i]) == "-st"){
-            sumTuxFile = string(argv[i + 1]);
+            dataFiles[sumTuxedo] = string(argv[i + 1]);
 
         //Option to parse raw two treatment counts data
         }else if(string(argv[i]) == "-r2"){
-            rawTreatFile = string(argv[i + 1]);
+            dataFiles[rawTreat] = string(argv[i + 1]);
             
         //Option for mean threshold
         }else if(string(argv[i]) == "-mt"){
@@ -174,8 +174,8 @@ int main(int argc, char *argv[]){
         }
     }
         //Parse the data
-        parseRawTuxedoData(rawTuxFile, entries, num_control_replic, num_target_replic);
-        parseSumaryTuxedoData(sumTuxFile, entries);
+        parseRawTuxedoData(dataFiles[rawTuxedo], entries, num_control_replic, num_target_replic);
+        parseSumaryTuxedoData(dataFiles[sumTuxedo], entries);
         
         //Filter the genes
         filterGeneEntries(entries, mean_threshold, var_threshold);        
