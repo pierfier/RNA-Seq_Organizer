@@ -70,7 +70,11 @@ void findOverlap(vector<Experiment>& experiments, set<string>& entries){
     }
 }
 
-void printOverlap(string fileName, set<string>& entries, const vector<Experiment>& experiments){  
+void parseConfigFile(const string& configFile, vector<Experiment>& experiments){
+    
+}
+
+void printOverlap(const string& fileName, set<string>& entries, const vector<Experiment>& experiments){  
     //Open the output file
     ofstream out(fileName.c_str());
     
@@ -79,11 +83,18 @@ void printOverlap(string fileName, set<string>& entries, const vector<Experiment
         exit(1);
     }
 
-    set<GeneEntry>::iterator it;
+    set<string>::iterator it;
     
+    GeneEntry entry;
+
     for(it = entries.begin(); it != entries.end(); ++it){
-            
+        for(int i = 0; i < experiments.size(); ++i){
+            experiments[i].getGeneEntry(*it).printData(out);
+            out << endl;
+        }
     }
+
+    out.close();
 }
 
 void rankAndFilterExperiments(vector<Experiment>& experiments){

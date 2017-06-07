@@ -19,6 +19,7 @@ class Experiment{
         
         //Getters
         GeneEntry getGeneEntryAt(int i);
+        GemeEmtry getGeneEntry(string name);
         int getNumGenes() const ;   
         bool hasGeneEntry(string gene) const;
     private:
