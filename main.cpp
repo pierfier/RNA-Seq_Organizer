@@ -7,6 +7,7 @@
 #include <set>
 #include "gene.h"
 #include "parsers.h"
+#include "experiment.h"
 
 using namespace std;
 
@@ -19,6 +20,20 @@ enum dataFiles{
     rawTreat
 };
 
+void findOverlap(vector<Experiment>& experiments, set<GeneEntry>& entries){
+    //TODO need to figure this out
+}
+
+void printOverlap(string fileName, set<GeneEntry>& entries){
+    //TODO need to print this one out as well
+}
+
+void rankAndFilterExperiments(vector<Experiment>& experiments){
+    for(int i = 0; i < experiments.size(); ++i){
+        experiments[i].filter();
+        experiments[i].rankByAverageDifference();
+    }
+}
 
 //Remove all data that is above the given stdev threshold
 //or below the given mean threshold
@@ -126,13 +141,16 @@ void printHelp(){
 int main(int argc, char *argv[]){
     //Local Variables
     string dataFiles[MAX_FILES];
+    string configFile;
 
 
     //TODO Use this as a vector, possibly make this a class
     //to keep everything organized
     vector<Experiment> experiments;
-    
-    set<GeneEntry> sorted_entries;
+
+    //Set that stores the common genes across all of the experiments
+    //In order of basic ranking system
+    set<GeneEntry> common_genes;
     
     int num_target_replic;
     int num_control_replic;
@@ -142,8 +160,14 @@ int main(int argc, char *argv[]){
     //Check arguments for configuration options
     for(int i = 0; i < argc; ++i){
         
-        //Parse arguments based on experiments
-
+        // Parse arguments based on experiments
+        
+        //Parse for configuration data
+        if(string(argv[i]) == "-c"){
+            configFile = string(argv[i + 1]);
+        }
+        
+        //TODO might have to delete all of this
         //Option to parse raw Tuxedo data
         if(string(argv[i]) == "-rt"){
             dataFiles[rawTuxedo] = string(argv[i + 1]);
@@ -176,6 +200,27 @@ int main(int argc, char *argv[]){
             outputFile = string(argv[i + 1]);
         }
     }
+    
+    //Parse the config file
+    parseConfigFile(configFile, experiments);
+    rankAndFilterExperiments(experiments);
+
+
+    // Check commandline arguments for what process is going to be done
+    for(int i = 0; i < argc; ++i){
+        
+        //Option find overlap between all of the experiments
+        if(string(argv{i}) == "-ol"){
+            findOverlap(experiments, common_genes);
+        }else 
+        
+        //Option to print the common genes across all of the experiments
+        if(string(argv[i]) = "-pol"){
+            printOverlap(string(argv[i + 1]), common_genes);
+        }
+
+    }
+
         //Parse the data
         parseRawTuxedoData(dataFiles[rawTuxedo], entries, num_control_replic, num_target_replic);
         parseSumaryTuxedoData(dataFiles[sumTuxedo], entries);
