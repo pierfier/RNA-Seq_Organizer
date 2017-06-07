@@ -22,7 +22,7 @@ enum dataFiles{
 
 //Currently gets the genes that are found in all of the experiments
 //These genes are then stored in the set entries
-void findOverlap(vector<Experiment>& experiments, unordered_set<GeneEntry>& entries){
+void findOverlap(vector<Experiment>& experiments, set<string>& entries){
     //Map indexed by gene ID and then
     //stores the number of experiments it is referenced (NOTE: Not needed now, but could be used later)
     unordered_map<string, int> gene_reference;
@@ -70,8 +70,20 @@ void findOverlap(vector<Experiment>& experiments, unordered_set<GeneEntry>& entr
     }
 }
 
-void printOverlap(string fileName, set<GeneEntry>& entries){
-    //TODO need to print this one out as well
+void printOverlap(string fileName, set<string>& entries, const vector<Experiment>& experiments){  
+    //Open the output file
+    ofstream out(fileName.c_str());
+    
+    if(!out.is_open()){
+        cerr << "Could not open file " << fileName << endl;
+        exit(1);
+    }
+
+    set<GeneEntry>::iterator it;
+    
+    for(it = entries.begin(); it != entries.end(); ++it){
+            
+    }
 }
 
 void rankAndFilterExperiments(vector<Experiment>& experiments){
@@ -196,7 +208,7 @@ int main(int argc, char *argv[]){
 
     //Set that stores the common genes across all of the experiments
     //In order of basic ranking system
-    set<GeneEntry> common_genes;
+    set<string> common_genes;
     
     int num_target_replic;
     int num_control_replic;
