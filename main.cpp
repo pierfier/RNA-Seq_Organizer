@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 #include <stdlib.h>
 #include <set>
@@ -11,17 +12,62 @@
 
 using namespace std;
 
-#define MAX_FILES 3
+#define MAX_FILES 2
 
 //Global variables
 enum dataFiles{
     rawTuxedo,
     sumTuxedo,
-    rawTreat
 };
 
-void findOverlap(vector<Experiment>& experiments, set<GeneEntry>& entries){
-    //TODO need to figure this out
+//Currently gets the genes that are found in all of the experiments
+//These genes are then stored in the set entries
+void findOverlap(vector<Experiment>& experiments, unordered_set<GeneEntry>& entries){
+    //Map indexed by gene ID and then
+    //stores the number of experiments it is referenced (NOTE: Not needed now, but could be used later)
+    unordered_map<string, int> gene_reference;
+    int max_gene_occurrence = 1;
+
+
+    //Add genes from the first experiment into the map
+    for(int i = 0; i < experiments[0].getNumGenes(); ++i){
+        gene_reference(make_pair(experiments[0].getGeneEntryAt(i).getName(), 1));
+    }
+
+    //Check all of the other experiments to see if they have the same gene
+    //If so update individual gene counter
+    for(int i = 0; i < experiments.size(); ++i){
+        
+        //Iterate through each gene in the common gene reference map
+        //and test if they occur in the current experiment
+        unordered_map<string, int>::iterator it, it2;
+
+        for(it = gene_reference.begin(); it != gene_reference.end();){
+            if(experiments[i].hasGeneEntry(it->first)){
+                it->second += 1;
+                
+                //Update max gene occurrence count
+                if(it->second > max_gene_occurrence){
+                    max_gene_occurrence = it->second;
+                }
+
+                ++it;
+            }else{
+                it2 = it;
+                ++it;
+
+                gene_reference.erase(it2);
+            }
+        }
+    }
+
+    //Find all of the genes that have the same occurrence as the max gene
+    //then place them in the set
+    for(it = gene_reference.begin(); it != gene_reference.end(); ++it){
+        if(it->second == max_gene_occurrence){
+            entries.insert(it->first);
+        }
+    }
 }
 
 void printOverlap(string fileName, set<GeneEntry>& entries){
@@ -166,7 +212,9 @@ int main(int argc, char *argv[]){
         if(string(argv[i]) == "-c"){
             configFile = string(argv[i + 1]);
         }
-        
+ 
+
+
         //TODO might have to delete all of this
         //Option to parse raw Tuxedo data
         if(string(argv[i]) == "-rt"){
@@ -218,19 +266,5 @@ int main(int argc, char *argv[]){
         if(string(argv[i]) = "-pol"){
             printOverlap(string(argv[i + 1]), common_genes);
         }
-
     }
-
-        //Parse the data
-        parseRawTuxedoData(dataFiles[rawTuxedo], entries, num_control_replic, num_target_replic);
-        parseSumaryTuxedoData(dataFiles[sumTuxedo], entries);
-        
-        //Filter the genes
-        filterGeneEntries(entries, mean_threshold, var_threshold);        
-        
-        //Rank genes based on difference between the target average and control average
-        rankGeneEntries(entries, sorted_entries);
-        
-        //Ouput data to given file
-        outputData(sorted_entries, outputFile, num_target_replic, num_control_replic);
 }
