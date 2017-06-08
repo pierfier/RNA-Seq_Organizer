@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <stringstream>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -102,19 +102,19 @@ void parseConfigFile(const string& configFile, vector<Experiment>& experiments){
 
         ss >> str;
         //Set number target replicates
-        temp.setNumTargetReplic(atoi(str));
+        temp.setNumTargetReplic(atoi(str.c_str()));
         
         ss >> str;
         //Set number control replicates
-        temp.setNumControlReplic(atoi(str));
+        temp.setNumControlReplic(atoi(str.c_str()));
         
         ss >> str;
         //Set number mean threshold
-        temp.setMeanThres(atoi(str));
+        temp.setMeanThres(atoi(str.c_str()));
         
         ss >> str;
         //Set number of stdev threshold
-        temp.setVarThres(atoi(str));
+        temp.setVarThres(atoi(str.c_str()));
         
         //Add the experiment to the vector of experiments
         experiments.push_back(temp);
@@ -129,7 +129,7 @@ void printOverlap(const string& fileName, set<string>& entries, const vector<Exp
         cerr << "Could not open file " << fileName << endl;
         exit(1);
     }
-
+    
     set<string>::iterator it;
     
     GeneEntry entry;
@@ -147,105 +147,6 @@ void printOverlap(const string& fileName, set<string>& entries, const vector<Exp
 void rankAndFilterExperiments(vector<Experiment>& experiments){
     for(int i = 0; i < experiments.size(); ++i){
         experiments[i].filter();
-        experiments[i].rankByAverageDifference();
-    }
-}
-
-//Remove all data that is above the given stdev threshold
-//or below the given mean threshold
-void filterGeneEntries(unordered_map<string, GeneEntry>& entries, 
-        int mean_threshold, int var_threshold){
-    unordered_map<string, GeneEntry>::iterator it, it2;
-    for(it = entries.begin(); it != entries.end();){
-        
-        //DEBUG
-        if(it->second.getName() == "Atp5e"){
-            cout << "Stdev control of Atp5e is " << it->second.getControlStDev() 
-                << " and stdev target is " << it->second.getTargetStDev() << endl;
-        }
-
-        //Check if either standard deviations are above the threshold
-        if(it->second.getTargetStDev() > var_threshold ||
-           it->second.getControlStDev() > var_threshold ||
-           it->second.getTargetAverage() < mean_threshold  ||
-           it->second.getControlAverage() < mean_threshold ||
-           it->second.getControlAverage() > it->second.getTargetAverage() ){
-            
-            it2 = it;
-            ++it;
-            
-            entries.erase(it2);
-            
-        }else{
-            ++it;
-        }
-    }
-}
-
-// Rank gene entries based on fold change
-// copy all of the values from the unordered_map to the set
-// Ranking is done by GeneEntry class function comparisons
-void rankGeneEntries(unordered_map<string, GeneEntry>& entries, set<GeneEntry>& sorted_entries){
-    unordered_map<string, GeneEntry>::iterator it;
-
-    for(it = entries.begin(); it != entries.end(); ++it){
-        sorted_entries.insert(it->second);
-    }
-}
-
-void outputData(set<GeneEntry> entries, const string& outputFile, int target_replic,
-                    int control_replic){
-    ofstream out(outputFile);
- 
-    //Check if file works
-    if(!out.is_open()){
-        cerr << "Unable to open output file" << endl;
-        exit(1);
-    }   
-    
-
-    // Output file headings
-
-    out << "Gene ID\t";
-
-    //Output the target replicates heading
-    for(int i = 0; i < target_replic; ++i){
-        out << "T_rep " << i+1 << "\t";
-    }
-
-    //Output the control replicates heading
-    for(int i = 0; i < control_replic; ++i){
-        out << "C_rep " << i+1 << "\t";
-    }
-
-    out << "log2\tp_value"<< endl;
-
-    // Output gene entries
-
-    set<GeneEntry>::const_reverse_iterator it;
-    for(it = entries.rbegin(); it != entries.rend(); ++it){
-        
-        //Ouput name
-        out << it->getName() << "\t";
-      
-        //Output the replicate values
-        
-        for(int i = 0; i < it->numTargetValues(); ++i){
-            out << it->getTargetValueAt(i) << "\t";
-        }
-
-        for(int i = 0; i < it->numControlValues(); ++i){
-            out << it->getControlValueAt(i) << "\t";
-        }
-
-        // Output fold change and p value
-        out << it->getFoldChange() << "\t";
-        out << it->getPValue() << "\t";
-
-        out << endl;
-    }
-
-    out.close();
 }
 
 //Prints all of the commands and how to use them
@@ -284,7 +185,7 @@ int main(int argc, char *argv[]){
         }
  
 
-
+        /*
         //TODO might have to delete all of this
         //Option to parse raw Tuxedo data
         if(string(argv[i]) == "-rt"){
@@ -315,12 +216,13 @@ int main(int argc, char *argv[]){
             num_control_replic = atoi(argv[i + 1]);
 
         }else if(string(argv[i]) == "-o"){
-            outputFile = string(argv[i + 1]);
         }
+        */
     }
     
     //Parse the config file
     parseConfigFile(configFile, experiments);
+    
     rankAndFilterExperiments(experiments);
 
 
@@ -328,13 +230,13 @@ int main(int argc, char *argv[]){
     for(int i = 0; i < argc; ++i){
         
         //Option find overlap between all of the experiments
-        if(string(argv{i}) == "-ol"){
+        if(string(argv[i]) == "-ol"){
             findOverlap(experiments, common_genes);
         }else 
         
         //Option to print the common genes across all of the experiments
-        if(string(argv[i]) = "-pol"){
-            printOverlap(string(argv[i + 1]), common_genes);
+        if(string(argv[i]) == "-pol"){
+            printOverlap(string(argv[i + 1]), common_genes, experiments);
         }
     }
 }

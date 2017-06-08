@@ -1,4 +1,4 @@
-FLAGS = -g
+FLAGS = -Wall -g
 SRC = gene.cpp parsers.cpp main.cpp
 
 all: data_org

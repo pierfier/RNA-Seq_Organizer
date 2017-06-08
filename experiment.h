@@ -4,19 +4,27 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <set>
 
 using namespace std;
 
 class Experiment{
     public:
+        
+        //Constructor
+        Experiment();
 
         //Filters out data averages
         void filter();
-
+            
+        //Calculates the preliminary statistics for each gene
+        void calcStats();
+            
         //Rank the data based on simple difference from 
         //target average and control average
-        void rankByAverageDifference();
+        //set<GeneEntry> rankByAverageDifference();
         
+
         //Setters
 
         void setNumTargetReplic(int num){num_target_replic_ = num;}
@@ -28,9 +36,10 @@ class Experiment{
         void setVarThres(int num){var_threshold_ = num;}
 
         //Getters
-
-        GeneEntry getGeneEntryAt(int i);
-        GemeEmtry getGeneEntry(string name);
+        
+        //Looks up the gene by name in the map
+        //Returns empty GeneEntry if not found
+        GeneEntry getGeneEntry(string name);
         int getNumGenes() const ;   
         bool hasGeneEntry(string gene) const;
 
