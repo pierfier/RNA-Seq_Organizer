@@ -115,6 +115,9 @@ void parseConfigFile(const string& configFile, vector<Experiment>& experiments){
         ss >> str;
         //Set number of stdev threshold
         temp.setVarThres(atoi(str));
+        
+        //Add the experiment to the vector of experiments
+        experiments.push_back(temp);
     }
 }
 
