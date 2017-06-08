@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <map>
 #include <set>
+#include "gene.h"
 
 using namespace std;
 
@@ -20,7 +21,9 @@ class Experiment{
             
         //Calculates the preliminary statistics for each gene
         void calcStats();
-            
+ 
+        void parseData();
+
         //Rank the data based on simple difference from 
         //target average and control average
         //set<GeneEntry> rankByAverageDifference();
