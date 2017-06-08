@@ -27,22 +27,13 @@ void parseConfigFile(const string& configFile, vector<Experiment>& experiments){
         //Set the experiment label
         temp.setName(str);
 
-        //DEBUG
-        cout << "Exp name -" << str << "-";
-
         ss >> str;        
         //Set the raw Tuxedo file
         temp.setRawTuxFile(str);
 
-        //DEBUG
-        cout << str << "- -";
-
         ss >> str;
         //Set the sum Tuxedo file
         temp.setSumTuxFile(str);
-
-        //DEBUG
-        cout << str << "- -";
 
         ss >> str;
         //Set number target replicates

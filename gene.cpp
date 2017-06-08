@@ -82,7 +82,19 @@ double GeneEntry::getControlValueAt(int i) const {
 }
 
 void GeneEntry::printData(ostream& out){
+    
+    //Output the fold change and the P Value
     out << getFoldChange() << "\t" << getPValue() << "\t";
+    
+    // Output the control raw counts
+    for(int i = 0; i < numControlValues(); ++i){
+        out << control_values_[i] << "\t";
+    }
+
+    // Output the target raw counts
+    for(int i = 0; i < numTargetValues(); ++i){
+        out << target_values_[i] << "\t";
+    }
 }
 
 void GeneEntry::addControlValue(double val){

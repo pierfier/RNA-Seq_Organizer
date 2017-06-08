@@ -86,7 +86,18 @@ void printOverlap(const string& fileName, set<string>& entries, vector<Experimen
         
     //Print header with the number of experiments
     for(int i = 0; i < experiments.size(); ++i){
-        out << "Experiment" << i+1 << "\tFold_change\tp_value";
+        out << "Experiment" << i+1 << "\t"; 
+        
+        out << "Fold_change\tp_value\t";
+
+        for(int j = 0; j < experiments[i].getNumConRep(); ++j){
+            out << "Exp" << i+1 << "_Control_Rep" << j+1 << "\t";
+        }
+        
+        for(int j = 0; j < experiments[i].getNumTarRep(); ++j){
+            out << "Exp" << i+1 << "_Target_Rep" << j+1 << "\t";
+        }
+        
     }
 
     out << endl;
@@ -102,6 +113,7 @@ void printOverlap(const string& fileName, set<string>& entries, vector<Experimen
             out << experiments[i].getLabel() << "\t";
             experiments[i].getGeneEntry(*it).printData(out);
         }
+
         out << endl;
     }
 

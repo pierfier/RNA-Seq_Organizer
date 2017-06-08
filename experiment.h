@@ -47,6 +47,8 @@ class Experiment{
         int getNumGenes() const ;   
         bool hasGeneEntry(string gene);
         string getLabel(){return name_;}
+        int getNumConRep(){return num_control_replic_;}
+        int getNumTarRep(){return num_target_replic_;}
 
         //Returns a set copy of all of the genes in this experiment
         unordered_map<string, int> getGenesList();
