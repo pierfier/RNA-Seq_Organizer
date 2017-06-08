@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <map>
 #include <set>
 
 using namespace std;
@@ -41,8 +42,11 @@ class Experiment{
         //Returns empty GeneEntry if not found
         GeneEntry getGeneEntry(string name);
         int getNumGenes() const ;   
-        bool hasGeneEntry(string gene) const;
+        bool hasGeneEntry(string gene);
+        string getLabel(){return name_;}
 
+        //Returns a set copy of all of the genes in this experiment
+        unordered_map<string, int> getGenesList();
     private:
         
         // Data files

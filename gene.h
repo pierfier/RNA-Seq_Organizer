@@ -23,7 +23,7 @@ class GeneEntry{
         void setPValue(const string& val){pValue_ = val;}
 
         //Prints all of the data to the output stream
-        void printData(ostream out);
+        void printData(ostream& out);
 
         //Calculate all of the averages and standard deviations
         void calcStats();

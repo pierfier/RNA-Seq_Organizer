@@ -1,5 +1,5 @@
-FLAGS = -Wall -g
-SRC = gene.cpp parsers.cpp main.cpp
+FLAGS = -g
+SRC = experiment.cpp gene.cpp parsers.cpp main.cpp
 
 all: data_org
 

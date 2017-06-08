@@ -32,9 +32,9 @@ void findOverlap(vector<Experiment>& experiments, set<string>& entries){
 
 
     //Add genes from the first experiment into the map
-    for(int i = 0; i < experiments[0].getNumGenes(); ++i){
-        gene_reference(make_pair(experiments[0].getGeneEntryAt(i).getName(), 1));
-    }
+    gene_reference = experiments[0].getGenesList();
+    
+    unordered_map<string, int>::iterator it, it2;
 
     //Check all of the other experiments to see if they have the same gene
     //If so update individual gene counter
@@ -42,7 +42,6 @@ void findOverlap(vector<Experiment>& experiments, set<string>& entries){
         
         //Iterate through each gene in the common gene reference map
         //and test if they occur in the current experiment
-        unordered_map<string, int>::iterator it, it2;
 
         for(it = gene_reference.begin(); it != gene_reference.end();){
             if(experiments[i].hasGeneEntry(it->first)){
@@ -121,7 +120,7 @@ void parseConfigFile(const string& configFile, vector<Experiment>& experiments){
     }
 }
 
-void printOverlap(const string& fileName, set<string>& entries, const vector<Experiment>& experiments){  
+void printOverlap(const string& fileName, set<string>& entries, vector<Experiment>& experiments){  
     //Open the output file
     ofstream out(fileName.c_str());
     
@@ -130,15 +129,29 @@ void printOverlap(const string& fileName, set<string>& entries, const vector<Exp
         exit(1);
     }
     
+    // Print header information
+    
+    out << "Gene_ID\t";
+        
+    //Print header with the number of experiments
+    for(int i = 0; i < experiments.size(); ++i){
+        out << "Experiment" << i+1 << "\tFold_change\tp_value";
+    }
+
+    out << endl;
+
+
     set<string>::iterator it;
     
-    GeneEntry entry;
-
     for(it = entries.begin(); it != entries.end(); ++it){
+        //Print gene ID
+        out << *it << "\t";
+
         for(int i = 0; i < experiments.size(); ++i){
+            out << experiments[i].getLabel() << "\t";
             experiments[i].getGeneEntry(*it).printData(out);
-            out << endl;
         }
+        out << endl;
     }
 
     out.close();
@@ -147,6 +160,7 @@ void printOverlap(const string& fileName, set<string>& entries, const vector<Exp
 void rankAndFilterExperiments(vector<Experiment>& experiments){
     for(int i = 0; i < experiments.size(); ++i){
         experiments[i].filter();
+    }
 }
 
 //Prints all of the commands and how to use them

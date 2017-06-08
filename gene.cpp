@@ -81,6 +81,10 @@ double GeneEntry::getControlValueAt(int i) const {
     return control_values_[i];
 }
 
+void GeneEntry::printData(ostream& out){
+    out << getFoldChange() << "\t" << getPValue() << "\t";
+}
+
 void GeneEntry::addControlValue(double val){
     control_values_.push_back(val);
 }
