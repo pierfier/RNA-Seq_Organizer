@@ -38,7 +38,7 @@ class Experiment{
         void setName(string name){name_ = name;}
         void setMeanThres(int num){mean_threshold_ = num;}
         void setVarThres(int num){var_threshold_ = num;}
-
+        void setAvgDiffThres(int num){average_diff_threshold_ = num;}
         //Getters
         
         //Looks up the gene by name in the map
@@ -62,6 +62,7 @@ class Experiment{
         int num_control_replic_;
         int mean_threshold_;
         int var_threshold_;
+        int average_diff_threshold_;
         unordered_map<string, GeneEntry> gene_entries_;
 
 };

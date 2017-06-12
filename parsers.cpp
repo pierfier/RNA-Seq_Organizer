@@ -51,6 +51,9 @@ void parseConfigFile(const string& configFile, vector<Experiment>& experiments){
         //Set number of stdev threshold
         temp.setVarThres(atoi(str.c_str()));
         
+        ss >> str;
+        //Set the average difference threshold
+        temp.setAvgDiffThres(atoi(str.c_str()));
         
         //Parse the individual data for each experiment
         temp.parseData();
