@@ -22,7 +22,7 @@ def readInData(fileName, zValues):
 
 #sample heatmap
 def heatMap(RS3, RS4):
-    trace = go.Heatmap(z=[RS3, RS4])
+    trace = go.Heatmap(z=[RS3, RS4], y = ["RS3", "RS4"])
     data = [trace]
     plot(data, filename="sample.html")
 
