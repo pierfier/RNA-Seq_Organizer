@@ -7,9 +7,12 @@ def readInData(fileName, zValues):
     print("Reading in data")
     f = open(fileName, 'r')
     
-    #Read each line
+    #Skip the header line
     line = f.readline()
     
+    #Read each line
+    line = f.readline()
+
     while line:
         numStr = line[line.index("\t"):]
         
@@ -22,7 +25,11 @@ def readInData(fileName, zValues):
     f.close()
 
 #sample heatmap
-def heatMap():
-    trace = go.Heatmap()
+def heatMap(RS3, RS4):
+    trace = go.Heatmap(z=[RS3, RS4])
     data = [trace]
-    py.plot(data, "basic-heatmap")
+    py.plot(data, filename="basic-heatmap")
+
+#------ Start of execution --------
+RS3 = []
+RS4 = []
