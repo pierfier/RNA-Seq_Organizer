@@ -2,7 +2,7 @@ from plotly.offline import plot
 import plotly.graph_objs as go
 
 #Read in expression levels with genes
-def readInData(fileName, zValues):
+def readInData(fileName, RS3Vals, RS4Vals):
     print("Reading in data")
     f = open(fileName, 'r')
     
@@ -15,7 +15,11 @@ def readInData(fileName, zValues):
     while line:
         
         numStr = line.split()[1]
-        zValues.append(float(numStr))
+        RS3Vals.append(float(numStr))
+        
+        numStr = line.split()[2]
+        RS4Vals.append(float(numStr))
+
         line = f.readline()
 
     f.close()
@@ -29,7 +33,6 @@ def heatMap(RS3, RS4):
 #------ Start of execution --------
 RS3 = []
 RS4 = []
-readInData("sample1.txt", RS3)
-readInData("sample2.txt", RS4)
+readInData("overlap.csv", RS3, RS4)
 
 heatMap(RS3, RS4)
