@@ -1,9 +1,8 @@
-import plotly.plotly as py
+from plotly.offline import plot
 import plotly.graph_objs as go
 
 #Read in expression levels with genes
 def readInData(fileName, zValues):
-    zValues = []
     print("Reading in data")
     f = open(fileName, 'r')
     
@@ -14,11 +13,8 @@ def readInData(fileName, zValues):
     line = f.readline()
 
     while line:
-        numStr = line[line.index("\t"):]
         
-        #DEBUG
-        print(numStr)
-        
+        numStr = line.split()[1]
         zValues.append(float(numStr))
         line = f.readline()
 
@@ -28,8 +24,12 @@ def readInData(fileName, zValues):
 def heatMap(RS3, RS4):
     trace = go.Heatmap(z=[RS3, RS4])
     data = [trace]
-    py.plot(data, filename="basic-heatmap")
+    plot(data, filename="sample.html")
 
 #------ Start of execution --------
 RS3 = []
 RS4 = []
+readInData("sample1.txt", RS3)
+readInData("sample2.txt", RS4)
+
+heatMap(RS3, RS4)
