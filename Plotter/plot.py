@@ -8,9 +8,18 @@ def readInData(fileName, zValues):
     f = open(fileName, 'r')
     
     #Read each line
-    while line = f.readline():
-        numStr = 
+    line = f.readline()
+    
+    while line:
+        numStr = line[line.index("\t"):]
+        
+        #DEBUG
+        print(numStr)
+        
         zValues.append(float(numStr))
+        line = f.readline()
+
+    f.close()
 
 #sample heatmap
 def heatMap():
