@@ -64,7 +64,7 @@ void Experiment::parseData(){
 
     }
     // Read in the summary Tuxedo file
-    in = ifstream(sumTuxFile_.c_str());
+    in.open(sumTuxFile_.c_str());
 
     if(sumTuxFile_ != "\"\""){
 
