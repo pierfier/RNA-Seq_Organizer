@@ -31,6 +31,3 @@ and standard deviation
         - The next column are the fold change values, taken in as a string so there is no comparison capability
         - The next column are the p values, again taken in as a string so no comparison capability
 
-
-
-        f
