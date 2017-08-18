@@ -32,3 +32,8 @@ and standard deviation
         - The next column are the p values, again taken in as a string so no comparison capability
     
     -> Configuration file
+        
+        <Experiment label> <Raw counts file name> <Summary statistics file name> <number of target replicates> <number of control replicates> <Average threshold> <standard deviation threshold> <Average control and target difference>
+        .
+        .
+
